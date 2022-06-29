@@ -52,7 +52,9 @@ object Test {
 
     new S3 {
       private val refDb: Ref[Map[String, (ContentType, Metadata)]] =
-        Ref.unsafeMake(Map.empty[String, (ContentType, Metadata)])
+        Unsafe.unsafeCompat { implicit unsafe =>
+          Ref.unsafe.make(Map.empty[String, (ContentType, Metadata)])
+        }
 
       override def createBucket(bucketName: String): IO[S3Exception, Unit] =
         Files.createDirectory(path / bucketName).orDie
